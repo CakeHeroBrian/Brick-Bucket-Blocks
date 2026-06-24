@@ -79,9 +79,9 @@ private:
 
 	static constexpr const float m_acceleration = 40.0f;
 	static constexpr const float m_waterAcceleration = 20.0f;
-	//static constexpr const float m_maxSpeed = 8.0f;
+	static constexpr const float m_maxSpeed = 8.0f;
 	static constexpr const float m_maxSpeedWater = 4.0f;
-	static constexpr const float m_maxSpeed = 100.0f;
+	//static constexpr const float m_maxSpeed = 100.0f;
 	static constexpr const float m_drag = m_acceleration / m_maxSpeed;
 	static constexpr const float m_dragWater = m_waterAcceleration / m_maxSpeedWater;
 

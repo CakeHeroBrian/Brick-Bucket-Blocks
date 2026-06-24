@@ -1079,12 +1079,22 @@ float bilinearInterpolation(
 
 World::ColumnContext World::classifyColumn(const BiomeMap& biomeMap, int32_t worldX, int32_t worldZ, glm::i32vec3 chunkPosition, int32_t localX, int32_t localZ) const noexcept {
 	constexpr float chunkStartInSamples = (float)BiomeMap::MARGIN / (float)BiomeMap::STEP;
-	float chunkX = chunkStartInSamples + ((float)localX / (float)BiomeMap::STEP);
-	float chunkZ = chunkStartInSamples + ((float)localZ / (float)BiomeMap::STEP);
+
+	constexpr float warpStrength = (float)BiomeMap::STEP * 0.75f;
+	float warpX = m_transitionNoise.GetNoise((float)worldX * 0.05f, (float)worldZ * 0.05f) * warpStrength;
+	float warpZ = m_transitionNoise.GetNoise((float)worldX * 0.05f + 99.0f, (float)worldZ * 0.05f + 99.0f) * warpStrength;
+
+	float chunkX = chunkStartInSamples + ((float)localX / (float)BiomeMap::STEP) + warpX;
+	float chunkZ = chunkStartInSamples + ((float)localZ / (float)BiomeMap::STEP) + warpZ;
 	int32_t chunkX0 = (int32_t)chunkX;
 	int32_t chunkZ0 = (int32_t)chunkZ;
+
+
 	float factorX = chunkX - chunkX0;
 	float factorZ = chunkZ - chunkZ0;
+
+	factorX = factorX * factorX * (3.0f - 2.0f * factorX);
+	factorZ = factorZ * factorZ * (3.0f - 2.0f * factorZ);
 
 	const BiomeSample& s00 = biomeMap.get(chunkX0, chunkZ0);
 	const BiomeSample& s10 = biomeMap.get(chunkX0 + 1, chunkZ0);
@@ -1310,18 +1320,19 @@ const World::Biome* World::selectBiomeFromParameters(
 	float continentalness
 ) const noexcept {
 
-	if (continentalness < 0.2f) return &m_biomes[0]; 
+	float oceanBias = glm::smoothstep(0.25f, 0.15f, continentalness);
+	if (oceanBias > 0.5f) return &m_biomes[0];
 
 	const Biome* best = nullptr;
 	float bestDist = std::numeric_limits<float>::max();
 
 	for (size_t i = 1; i < m_biomes.size(); i++) {
 		const Biome& b = m_biomes[i];
-		float midT = (b.minTemperature + b.maxTemperature) * 0.5f;
-		float midH = (b.minHumidity + b.maxHumidity) * 0.5f;
-		float dt = temperature - midT;
-		float dh = humidity - midH;
-		float dist = dt * dt + dh * dh;
+		float midTemperature = (b.minTemperature + b.maxTemperature) * 0.5f;
+		float midHumitidty = (b.minHumidity + b.maxHumidity) * 0.5f;
+		float differenceTmperature = temperature - midTemperature;
+		float differenceHumidity = humidity - midHumitidty;
+		float dist = differenceTmperature * differenceTmperature + differenceHumidity * differenceHumidity;
 		if (dist < bestDist) {
 			bestDist = dist;
 			best = &b;

@@ -164,15 +164,16 @@ int main() {
 	TextureManager textureManager(textureManagerCreateInfo);
 
 	textureManager.addTexture("missing");
-	textureManager.addTexture("grass");
+	textureManager.addTexture("sarah_grass");
 	textureManager.addTexture("red_wool");
 	textureManager.addTexture("grass_side");
 	textureManager.addTexture("log_side");
-	textureManager.addTexture("stone");
+	textureManager.addTexture("sarah_stone");
 	textureManager.addTexture("leaves");
-	textureManager.addTexture("dirt");
+	textureManager.addTexture("sarah_dirt");
 	textureManager.addTexture("water");
-	textureManager.addTexture("sand");
+	textureManager.addTexture("sarah_sand");
+	textureManager.addTexture("sarah_grass_side");
 	textureManager.generateMipMaps();
 
 
@@ -187,23 +188,23 @@ int main() {
 	grassInfo.blockName = "grass";
 	grassInfo.type = Block::Type::Solid;
 	grassInfo.sideData = {
-		{ "grass_side", Block::Side::Sides }, 
-		{ "grass", Block::Side::Top }, 
-		{ "dirt", Block::Side::Bottom }
+		{ "sarah_grass_side", Block::Side::Sides }, 
+		{ "sarah_grass", Block::Side::Top }, 
+		{ "sarah_dirt", Block::Side::Bottom }
 	};
 
 	World::BlockInfo stoneInfo{};
 	stoneInfo.blockName = "stone";
 	stoneInfo.type = Block::Type::Solid;
 	stoneInfo.sideData = {
-		{"stone", Block::Side::All}
+		{"sarah_stone", Block::Side::All}
 	};
 
 	World::BlockInfo dirtInfo{};
 	dirtInfo.blockName = "dirt";
 	dirtInfo.type = Block::Type::Solid;
 	dirtInfo.sideData = {
-		{"dirt", Block::Side::All}
+		{"sarah_dirt", Block::Side::All}
 	};
 
 	World::BlockInfo redWoolInfo{};
@@ -224,7 +225,7 @@ int main() {
 	sandInfo.blockName = "sand";
 	sandInfo.type = Block::Type::Solid;
 	sandInfo.sideData = {
-		{"sand", Block::Side::All}
+		{"sarah_sand", Block::Side::All}
 	};
 
 	World::CreateInfo worldCreateInfo{.textureManager = textureManager };
